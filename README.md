@@ -1,7 +1,7 @@
 # pxc8
 Clone it
 
-##Run it
+## Run it
 
 Vagrant up; vagrant hostmanager
 
