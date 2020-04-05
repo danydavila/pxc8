@@ -1,0 +1,64 @@
+---
+- hosts: all
+  become: True
+  tasks:
+     - name: Install Percona Repo
+       yum:
+          name: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+          state: present
+
+     - name: Enable Repo Percona Experimental
+       shell: |
+           percona-release enable-only pxc-80 experimental
+           percona-release enable tools release
+           yum -y update
+       register: enable_percona_repo
+
+     - meta: flush_handlers
+     - debug:
+         var: enable_percona_repo
+
+     - name: Install PXC 8
+       yum:
+          name: "{{ item }}"
+          state: present
+       with_items:
+          - percona-xtradb-cluster-full
+          - vim
+          - ntp
+
+     - name: Enable binlogs
+       ini_file:
+          path: /etc/my.cnf
+          section: mysqld
+          option: "{{ item.option }}" 
+          value: "{{ item.value }}"
+       with_items:
+          - { option: log_bin, value: "binlog" }
+          - { option: log_slave_updates, value: "1" }
+
+     - name: Galera configuration
+       ini_file:
+          path: /etc/my.cnf
+          section: mysqld
+          option: "{{ item.option }}"
+          value: "{{ item.value }}"
+       with_items:
+          - { option: wsrep_cluster_name, value: "dani-cluster" }
+          - { option: wsrep_node_address, value: "{{ ansible_facts.eth1.ipv4.address }}" }
+          - { option: wsrep_node_name, value: "{{ ansible_hostname }}" }
+          - { option: wsrep_cluster_address, value: "gcomm://192.168.90.10,192.168.90.20,192.168.90.30" }
+          - { option: pxc-encrypt-cluster-traffic, value: "OFF" }
+
+     - name: Change server_id
+       ini_file:
+         path: /etc/my.cnf
+         section: mysqld
+         option: server_id
+         value: "10"
+         #value: "{{ ['10','20','30']|random }}"
+
+     - name: Disable SELinux
+       shell: |
+            sudo setenforce 0
+
