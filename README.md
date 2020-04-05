@@ -45,11 +45,11 @@ Now that the VMs are running, the next step is to get a fully functional PXC clu
 
 [ pxc1 ] `mysql -uroot -p`
 
-[ pxc1 ] `SET SESSION sql_log_bin=0; ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'cocacola'; flush privileges;`
+[ pxc1 ] `SET SESSION sql_log_bin=0; ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'myawesomepass'; flush privileges;`
 
 ## Set credentials file
 
-[ pxc1/2/3 ] `sudo echo -e "[client]\nuser=root\npassword=cocacola" > /root/.my.cnf`
+[ pxc1/2/3 ] `sudo echo -e "[client]\nuser=root\npassword=myawesomepass" > /root/.my.cnf`
 
 ## Add nodes to the cluster
 
