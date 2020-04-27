@@ -35,6 +35,16 @@ You will end with a 3-node cluster using PXC8.0 plus an additional VM to run PMM
 
 Now that the VMs are running, the next step is to get a fully functional PXC cluster running.
 
+Worth to mention that PXC8 now comes with the variable `pxc-encrypt-cluster-traffic` which enforce SSL encryption for the SST/IST traffic. To use that option, one has to configure the usage of the certificates automatically or manually.
+
+Also, one can override the SSL and disable `pxc-encrypt-cluster-traffic` for testing purpose. This is the case in this repo.
+
+## Disable SELinux
+
+PXC still requires to disable SELinux
+
+[ pxc1/2/3 ] `sudo setenforce 0`
+
 ## Bootstrap the cluster
 
 [ pxc1 ] `sudo systemctl start mysql@bootstrap.service`
