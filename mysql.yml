@@ -7,10 +7,11 @@
           name: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
           state: present
 
-     - name: Enable Repo Percona Experimental
+     - name: Enable Repo Percona for PXC8
        shell: |
-           percona-release enable-only pxc-80 experimental
-           percona-release enable tools release
+           percona-release disable all
+           percona-release setup pxc80
+           percona-release enable pxc-80
            yum -y update
        register: enable_percona_repo
 
